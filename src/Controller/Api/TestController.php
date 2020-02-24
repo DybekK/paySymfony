@@ -14,15 +14,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class TestController extends AbstractFOSRestController
 {
-
     /**
      * @Rest\Get("/jwt/test")
      * @return View
      */
     public function getTest(): View
     {
-
-        $data = ['imie'=>'Mateusz'];
+       // $user = $this->getUser()->getUsername();
+        $data = ["user" => "dybowski"];
         return View::create($data, Response::HTTP_OK);
     }
 
@@ -36,9 +35,9 @@ class TestController extends AbstractFOSRestController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $username = $request->get('_username');
-        $email = $request->get('_email');
-        $password = $request->get("_password");
+        $username = $request->get('username');
+        $email = $request->get('email');
+        $password = $request->get("password");
 
         $user = new User();
         $user->setUsername($username);
