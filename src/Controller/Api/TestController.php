@@ -20,9 +20,8 @@ class TestController extends AbstractFOSRestController
      */
     public function getTest(): View
     {
-       // $user = $this->getUser()->getUsername();
-        $data = ["user" => "dybowski"];
-        return View::create($data, Response::HTTP_OK);
+        $user = $this->getUser()->getUsername();
+        return View::create($user, Response::HTTP_OK);
     }
 
     /**
