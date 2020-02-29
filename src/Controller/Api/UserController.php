@@ -6,7 +6,9 @@ use App\Entity\User;
 use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +22,17 @@ class UserController extends AbstractFOSRestController
      */
     public function getTest(): View
     {
-        $user = $this->getUser()->getUsername();
-        return View::create($user, Response::HTTP_OK);
+        // $user = $this->getUser()->getUsername();
+        $user = $this->getUser()->getTransactions();
+
+        $encoders = [new JsonEncoder()]; // If no need for XmlEncoder
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+// Serialize your object in Json
+        $jsonObject = $serializer->serialize($user, 'json', ['ignored_attributes' => ['users', 'createdAt']]);
+        
+        return View::create($jsonObject, Response::HTTP_OK);
     }
 
     /**
