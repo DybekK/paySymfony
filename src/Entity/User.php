@@ -147,21 +147,19 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
-        $this->created_at = new \DateTime("now");
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate()
-    {
-        $this->updated_at = new \DateTime("now");
-    }
+   
+        /**
+         * @ORM\PrePersist
+         * @ORM\PreUpdate
+        */
+        public function updatedTimestamps(): void
+        {
+            $this->setUpdatedAt(new \DateTime('now'));    
+            if ($this->getCreatedAt() === null) {
+                $this->setCreatedAt(new \DateTime('now'));
+            }
+        }
+            
 
     public function getCreatedAt(): ?\DateTimeInterface
     {

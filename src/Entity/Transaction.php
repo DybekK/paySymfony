@@ -39,6 +39,16 @@ class Transaction
      */
     private $users;
 
+    /**
+     * @ORM\Column(type="string", length=8, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     */
+    private $amount;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -61,20 +71,16 @@ class Transaction
         return $this;
     }
 
-     /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
-        $this->created_at = new \DateTime("now");
-    }
-
     /**
+     * @ORM\PrePersist
      * @ORM\PreUpdate
-     */
-    public function onPreUpdate()
+    */
+    public function updatedTimestamps(): void
     {
-        $this->updated_at = new \DateTime("now");
+        $this->setUpdatedAt(new \DateTime('now'));    
+        if ($this->getCreatedAt() === null) {
+            $this->setCreatedAt(new \DateTime('now'));
+        }
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
@@ -84,7 +90,7 @@ class Transaction
 
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
-        $this->created_at = new \DateTime("now");
+        $this->created_at = $created_at;
 
         return $this;
     }
@@ -131,5 +137,29 @@ class Transaction
 
     public function __toString() {
         return $this->transactionname;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(string $amount): self
+    {
+        $this->amount = $amount;
+
+        return $this;
     }
 }

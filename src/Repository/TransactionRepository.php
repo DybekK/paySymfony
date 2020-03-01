@@ -19,22 +19,25 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    // /**
-    //  * @return Transaction[] Returns an array of Transaction objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Transaction[] Returns an array of Transaction objects
+     */
+    public function findByDate($user_id)
     {
+        $start_week =  new \DateTime('monday this week');
+        $end_week = new \DateTime('monday next week');
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        ->join('t.users', 'u')
+        ->where('u.id = :user_id')
+        ->andwhere('t.created_at >= :start')
+        ->andWhere('t.created_at <= :end')
+        ->setParameter('user_id', $user_id)
+        ->setParameter('start',$start_week, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)                      
+        ->setParameter('end',$end_week, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)
+        ->getQuery()
+        ->getResult(); 
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Transaction

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -10,27 +11,40 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use FOS\RestBundle\View\View;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractFOSRestController
 {
+
+
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->em = $entityManager;
+    }
+
+
     /**
      * @Rest\Get("/jwt/test")
      * @return View
      */
     public function getTest(): View
     {
-        // $user = $this->getUser()->getUsername();
-        $user = $this->getUser()->getTransactions();
 
-        $encoders = [new JsonEncoder()]; // If no need for XmlEncoder
+
+        $start_week = date("Y-m-d",strtotime('monday this week'));
+        $end_week = date("Y-m-d",strtotime('sunday this week'));
+
+        $id = $this->getUser()->getId();
+        $data = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findByDate($id);
+        $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
 
-// Serialize your object in Json
-        $jsonObject = $serializer->serialize($user, 'json', ['ignored_attributes' => ['users', 'createdAt']]);
+        $jsonObject = $serializer->serialize($data, 'json', ['ignored_attributes' => ['users', 'createdAt', 'updatedAt']]);
         
         return View::create($jsonObject, Response::HTTP_OK);
     }
