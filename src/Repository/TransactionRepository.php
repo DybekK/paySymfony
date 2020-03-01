@@ -22,18 +22,17 @@ class TransactionRepository extends ServiceEntityRepository
     /**
      * @return Transaction[] Returns an array of Transaction objects
      */
-    public function findByDate($user_id)
+    public function findByDate($user_id, $start_date, $end_date)
     {
-        $start_week =  new \DateTime('monday this week');
-        $end_week = new \DateTime('monday next week');
+
         return $this->createQueryBuilder('t')
         ->join('t.users', 'u')
         ->where('u.id = :user_id')
         ->andwhere('t.created_at >= :start')
         ->andWhere('t.created_at <= :end')
         ->setParameter('user_id', $user_id)
-        ->setParameter('start',$start_week, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)                      
-        ->setParameter('end',$end_week, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)
+        ->setParameter('start',$start_date, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)                      
+        ->setParameter('end',$end_date, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)
         ->getQuery()
         ->getResult(); 
     }

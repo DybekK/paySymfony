@@ -19,35 +19,27 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractFOSRestController
 {
 
+    // /**
+    //  * @Rest\Get("/jwt/test")
+    //  * @return View
+    //  */
+    // public function getTest(): View
+    // {
 
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->em = $entityManager;
-    }
+    //     $start_week = date("Y-m-d",strtotime('monday this week'));
+    //     $end_week = date("Y-m-d",strtotime('sunday this week'));
 
+    //     $id = $this->getUser()->getId();
+    //     $data = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findByDate($id);
+    //     $encoders = [new JsonEncoder()];
+    //     $normalizers = [new ObjectNormalizer()];
+    //     $serializer = new Serializer($normalizers, $encoders);
 
-    /**
-     * @Rest\Get("/jwt/test")
-     * @return View
-     */
-    public function getTest(): View
-    {
-
-
-        $start_week = date("Y-m-d",strtotime('monday this week'));
-        $end_week = date("Y-m-d",strtotime('sunday this week'));
-
-        $id = $this->getUser()->getId();
-        $data = $this->getDoctrine()->getManager()->getRepository(Transaction::class)->findByDate($id);
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $jsonObject = $serializer->serialize($data, 'json', ['ignored_attributes' => ['users', 'createdAt', 'updatedAt']]);
+    //     $jsonObject = $serializer->serialize($data, 'json', ['ignored_attributes' => ['users', 'createdAt', 'updatedAt']]);
         
-        return View::create($jsonObject, Response::HTTP_OK);
-    }
+    //     return View::create($jsonObject, Response::HTTP_OK);
+    // }
 
     /**
      * @Rest\Post("/register")
