@@ -26,6 +26,8 @@ class TransactionRepository extends ServiceEntityRepository
     {
 
         return $this->createQueryBuilder('t')
+        ->select('t.id, t.transactionname, t.type, t.amount, k.id as kind_id, k.kindname, t.updated_at')
+        ->join('t.kind', 'k')
         ->join('t.users', 'u')
         ->where('u.id = :user_id')
         ->andwhere('t.created_at >= :start')

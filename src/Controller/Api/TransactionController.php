@@ -51,7 +51,7 @@ class TransactionController extends AbstractFOSRestController
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
 
-        $jsonObject = $serializer->serialize($data, 'json', ['ignored_attributes' => ['users', "kind", 'createdAt', 'updatedAt']]);
+        $jsonObject = $serializer->serialize($data, 'json');
         
        // return View::create($jsonObject, Response::HTTP_OK);
        return new Response($jsonObject);
