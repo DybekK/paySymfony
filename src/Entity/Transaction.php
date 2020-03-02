@@ -49,6 +49,11 @@ class Transaction
      */
     private $amount;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Kind", inversedBy="transactions")
+     */
+    private $kind;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -159,6 +164,18 @@ class Transaction
     public function setAmount(string $amount): self
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getKind(): ?Kind
+    {
+        return $this->kind;
+    }
+
+    public function setKind(?Kind $kind): self
+    {
+        $this->kind = $kind;
 
         return $this;
     }
