@@ -32,14 +32,17 @@ class TransactionController extends AbstractFOSRestController
             case 'week':
                 $start_date =  new \DateTime('monday this week');
                 $end_date = new \DateTime('monday next week');
-                break;
+            break;
             case 'month':
                 $start_date =  new \DateTime('midnight first day of this month');
                 $end_date = new \DateTime('last day of this month');
+            break;
             case 'year':
                 $start_date =  new \DateTime('first day of January');
-                $end_date = new \DateTime('last day of January');
+                $end_date = new \DateTime('last day of December');
+            break;
             default:
+                return 0;
         }
 
         $id = $this->getUser()->getId();
