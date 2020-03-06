@@ -28,6 +28,11 @@ class Kind
      */
     private $transactions;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $iconColor;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -83,5 +88,17 @@ class Kind
 
     public function __toString() {
         return $this->kindname;
+    }
+
+    public function getIconColor(): ?string
+    {
+        return $this->iconColor;
+    }
+
+    public function setIconColor(?string $iconColor): self
+    {
+        $this->iconColor = $iconColor;
+
+        return $this;
     }
 }

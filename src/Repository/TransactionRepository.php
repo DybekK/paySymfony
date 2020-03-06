@@ -24,9 +24,8 @@ class TransactionRepository extends ServiceEntityRepository
      */
     public function findByDate($user_id, $start_date, $end_date)
     {
-
         return $this->createQueryBuilder('t')
-        ->select('t.id, t.transactionname, t.type, t.amount, k.id as kind_id, k.kindname, t.updated_at')
+        ->select('t.id, t.transactionname, t.type, t.amount, k.id as kind_id, k.kindname, k.iconColor, t.updated_at')
         ->join('t.kind', 'k')
         ->join('t.users', 'u')
         ->where('u.id = :user_id')
