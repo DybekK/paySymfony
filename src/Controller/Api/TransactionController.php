@@ -11,10 +11,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use FOS\RestBundle\View\View;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class TransactionController extends AbstractFOSRestController
 {
@@ -57,34 +55,40 @@ class TransactionController extends AbstractFOSRestController
        return new Response($jsonObject);
     }
 
-    // /**
-    //  * @Rest\Post("/register")
-    //  * @param Request $request
-    //  * @param UserPasswordEncoderInterface $encoder
-    //  * @return View
-    //  */
-    // public function postRegister(Request $request, UserPasswordEncoderInterface $encoder): View
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $username = $request->get('username');
-    //     $email = $request->get('email');
-    //     $password = $request->get("password");
+    /**
+     * @Rest\Post("/jwt/transaction")
+     * @param Request $request
+     * @return View
+     */
+    public function postTransaction(Request $request): View
+    {
+        $em = $this->getDoctrine()->getManager();
+        $transactionname = $request->get('transactionname');
+        $amount = $request->get('amount');
+        $type = $request->get("type");
+        $id = $this->getUser()->getId();
 
-    //     if(is_null($username) || is_null($password)) {
-    //         return View::create(sprintf('Please verify all your inputs.', Response::HTTP_UNAUTHORIZED));
-    //     }
+        if(is_null($transactionname) || is_null($amount)) {
+            return View::create(sprintf('Please verify all your inputs.', Response::HTTP_UNAUTHORIZED));
+        }
 
-    //     try {
-    //         $user = new User();
-    //         $user->setUsername($username);
-    //         $user->setEmail($email);
-    //         $user->setPassword($encoder->encodePassword($user, $password));
-    //         $em->persist($user);
-    //         $em->flush();
-    //     } catch (Exception $e) {
-    //         return View::create(sprintf($e), Response::HTTP_CONFLICT);
-    //     }
+        try {
+            $transaction = new Transaction();
+            $user = $em->getRepository(User::class)->find($id);
+            $transaction->setTransactionname($transactionname);
+            $transaction->setAmount($amount);
+            $transaction->setType($type);
 
-    //     return View::create(sprintf('User %s successfully created', $user->getUsername()), Response::HTTP_OK);
-    // }
+            $user->addTransaction($transaction);
+            $transaction->addUser($user);
+    
+            $em->persist($transaction);
+            $em->persist($user);
+            $em->flush();
+        } catch (Exception $e) {
+            return View::create(sprintf($e), Response::HTTP_CONFLICT);
+        }
+
+        return View::create(sprintf('Transaction successfully created', $user->getUsername()), Response::HTTP_OK);
+    }
 }
