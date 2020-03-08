@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Kind;
 use App\Entity\Transaction;
 use App\Entity\User;
 use Exception;
@@ -75,13 +76,19 @@ class TransactionController extends AbstractFOSRestController
         try {
             $transaction = new Transaction();
             $user = $em->getRepository(User::class)->find($id);
+            $kind = $em->getRepository(Kind::class)->findOneBy(['kindname' => 'Any']);
+
             $transaction->setTransactionname($transactionname);
             $transaction->setAmount($amount);
             $transaction->setType($type);
 
             $user->addTransaction($transaction);
             $transaction->addUser($user);
-    
+
+            $kind->addTransaction($transaction);
+            $transaction->setKind($kind);
+
+            $em->persist($kind);
             $em->persist($transaction);
             $em->persist($user);
             $em->flush();
