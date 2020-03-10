@@ -96,6 +96,29 @@ class TransactionController extends AbstractFOSRestController
             return View::create(sprintf($e), Response::HTTP_CONFLICT);
         }
 
-        return View::create(sprintf('Transaction successfully created', $user->getUsername()), Response::HTTP_OK);
+        return View::create(sprintf('Transaction successfully created'), Response::HTTP_OK);
+    }
+
+      /**
+     * @Rest\Delete("/jwt/transaction/{id}")
+     * @return View
+     */
+    public function deleteTransaction($id): View
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if(is_null($id)) {
+            return View::create(sprintf('Please verify all your inputs.', Response::HTTP_UNAUTHORIZED));
+        }
+
+        try {
+            $transactionItem = $em->getRepository(Transaction::class)->find($id);
+            $em->remove($transactionItem);
+            $em->flush();   
+        } catch (Exception $e) {
+            return View::create(sprintf($e), Response::HTTP_CONFLICT);
+        }
+
+        return View::create(sprintf('Transaction has been successfully deleted'), Response::HTTP_OK);
     }
 }
