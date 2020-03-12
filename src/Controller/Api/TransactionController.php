@@ -101,6 +101,7 @@ class TransactionController extends AbstractFOSRestController
 
       /**
      * @Rest\Delete("/jwt/transaction/{id}")
+     * @param Request $id
      * @return View
      */
     public function deleteTransaction($id): View
